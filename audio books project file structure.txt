@@ -1,0 +1,1278 @@
+ReadWise AI — Full Project Plan
+
+Project title: ReadWise AI – Intelligent Book-to-Audio and Visual Learning Assistant
+
+Project goal: Develop a full-stack web application that accepts PDFs, images, and cloud links, converts written content into English audio, explains images and diagrams, and uses AI to help users understand, summarize, analyze, and learn from their content.
+
+The plan below combines all the features discussed so far, including your existing book-to-audio project, free/lightweight AI models, Google Drive integration, file uploads, image explanation, accuracy improvement, sentiment analysis, and decision extraction.
+
+1. Complete application overview
+
+Module 1 — Input and document management
+
+Accept files from a user's device, Google Drive, or supported online file links. Validate, organize, and process PDFs and images.
+
+Module 2 — Text and image extraction
+
+Extract text, headings, pages, tables where feasible, and embedded PDF images. Use OCR when a page contains scanned text rather than selectable text.
+
+Module 3 — AI reading and audio
+
+Generate English speech, summaries, chapter-wise reading, simplified explanations, and bookmarks.
+
+Module 4 — Visual learning
+
+Explain uploaded pictures, textbook diagrams, charts, and figures. Extract labels and answer questions about the visible content.
+
+Module 5 — AI learning and analysis
+
+Generate summaries, key concepts, flashcards, quizzes, sentiment analysis, important decisions, recommendations, and risks.
+
+2. All input options
+
+The application should provide three main ways to submit content.
+
+Option A — Upload a file from the device
+
+Supported file formats
+
+PDF
+
+Books, notes, textbooks, reports, scanned documents
+
+PNG
+
+Screenshots, diagrams, charts, scanned pages
+
+JPG / JPEG
+
+Photos of book pages, pictures and figures
+
+Scanned pages
+
+Image-based pages inside a PDF, processed with OCR
+
+How it works
+
+The user selects or drags a file into the upload area.
+
+The backend checks file type, size, and whether it can be opened safely.
+
+For PDFs, extract selectable text and embedded images page by page.
+
+For scanned pages and images, run OCR to recognize text.
+
+Send extracted content to the relevant AI features.
+
+Display the extracted text and let the user listen to, summarize, or analyze it.
+
+Useful extras: upload progress, clear error messages, file preview, page count, processing status, cancel/retry, and a delete-file option.
+
+Option B — Google Drive link
+
+Users paste a Google Drive sharing link to a PDF or supported image file.
+
+Features to include
+
+Input field for a Drive link.
+
+Validate the link and identify the requested file.
+
+Retrieve public/shared files when access is permitted.
+
+For private files, offer Google sign-in and request only the required Drive permissions.
+
+Show the file name, type, size, and processing status where available.
+
+Report invalid links, unsupported files, expired access, and permission errors.
+
+Important: A Google Drive URL is not always a direct-download URL. Use the Google Drive API and appropriate authorization where needed. Never ask users to make confidential files public merely to process them.
+
+Option C — Other online links
+
+Allow a user to paste a URL pointing to a supported PDF or image hosted on another website.
+
+Required behavior
+
+Validate the URL and allow only supported file types.
+
+Download the file through the backend only after safety checks.
+
+Reject unsupported websites, login-required pages, and links that cannot be retrieved.
+
+Limit file sizes and download time.
+
+Protect against unsafe URLs, including requests to private network addresses.
+
+Never execute files or trust a URL's extension alone.
+
+A link to a web page is not necessarily a link to the underlying file. In the first release, support direct PDF and image URLs; add other cloud services later if needed.
+
+3. Complete feature list
+
+This is the proposed feature scope for the whole application. Build the essential features first, then add the advanced AI features in later phases.
+
+A. Document reading and management
+Upload PDF, PNG, JPG and JPEG files
+Import supported files from Google Drive
+Import supported direct online file links
+Preview documents and images
+Extract text and preserve page numbers
+Extract images embedded in PDFs
+Recognize text in scanned pages using OCR
+Show processing progress and errors
+Organize documents in a personal library
+Delete documents and generated files
+
+1 of 10 marked as reviewed.
+
+B. Book-to-audio features
+Convert extracted text into English speech
+Listen to the entire document
+Play a selected page or chapter
+Play, pause, resume and seek
+Adjust playback speed
+Select an available English voice
+Track the current page or text position
+Bookmark a page or paragraph
+Download generated audio where supported
+Resume listening from saved progress
+
+0 of 10 marked as reviewed.
+
+C. AI text analysis
+Summarize the whole document
+Summarize a selected chapter or page
+Explain difficult paragraphs in simple English
+Extract key points and definitions
+Generate flashcards
+Generate practice questions and quizzes
+Extract decisions, recommendations and action items
+Analyze sentiment and emotional tone
+Identify benefits, risks and limitations
+Ask questions about the uploaded document
+
+0 of 10 marked as reviewed.
+
+D. Image understanding
+Generate a basic image caption
+Explain a diagram step by step
+Extract text and labels from a figure
+Explain charts and tables where supported
+Describe relationships between visible components
+Answer questions about an image
+Read the image explanation aloud
+Show the source page for an image extracted from a PDF
+
+0 of 8 marked as reviewed.
+
+4. Detailed AI feature behavior
+A. English text-to-speech
+
+The system should clean extracted text before sending it to the speech engine. It should avoid reading repeated page headers, footers, broken words, or irrelevant symbols when these can be reliably identified.
+
+Split long books into manageable sections.
+
+Generate speech for each section rather than sending an entire book in one request.
+
+Store the generated audio with its associated document and section.
+
+Use an audio player with playback controls and progress.
+
+Save the last listened-to section and position.
+
+Suggested approach: Test a local English TTS engine such as Piper or Kokoro. Check the specific model and voice licenses before distributing the application. Keep a fallback option if a voice is unavailable on the deployment server.
+
+B. Image and diagram explanation
+
+Your existing notebook uses BLIP to generate basic image captions. Keep it as a baseline, but do not rely on it alone for complex diagrams. A captioning model may identify the general subject without correctly explaining labels, arrows, sequences, or scientific relationships.
+
+The improved workflow should be:
+
+Identify whether the image contains text, a diagram, a chart, or a photograph.
+
+Use OCR to extract visible text and labels.
+
+Send the image and extracted labels to a vision-language model.
+
+Ask for a structured explanation: purpose, components, relationships, and step-by-step interpretation.
+
+Display uncertainty when labels or relationships are unclear.
+
+Allow follow-up questions and read the explanation aloud.
+
+For example, a user uploads a diagram of the water cycle. The app should explain evaporation, condensation, precipitation, and how the arrows connect the stages, rather than simply saying, “This image shows the water cycle.”
+
+C. Sentiment analysis
+
+Use sentiment analysis to identify the tone of a passage, not to decide whether the passage is factually correct.
+
+Possible outputs:
+
+Positive
+
+Negative
+
+Neutral
+
+Confidence score, if provided by the model
+
+For books, sentiment can be applied to a paragraph, chapter, or selected passage. For technical textbooks, neutral may be the most common result. An optional emotion model could be added later, but it is not essential for the first version.
+
+D. Decision and recommendation extraction
+
+This should be a distinct feature, especially for educational materials, reports, and business documents.
+
+The AI should extract:
+
+Main claim: What is the author saying?
+
+Decision or recommendation: What action or conclusion is proposed?
+
+Supporting evidence: Which passage supports it?
+
+Benefits: What positive outcomes are described?
+
+Risks or limitations: What concerns are mentioned?
+
+Source location: Page number or source passage.
+
+Confidence or review flag: Whether the output needs human verification.
+
+Not every book contains decisions or action items. When none are found, the application should say so instead of inventing them. Clearly separate the author's statements from the AI's own interpretation.
+
+E. Ask questions about a document
+
+A document Q&A assistant should answer questions using the user's uploaded content rather than relying only on the language model's general knowledge.
+
+For larger documents, a later version can use retrieval-augmented generation (RAG):
+
+Split extracted text into chunks.
+
+Store searchable representations of those chunks.
+
+Retrieve relevant passages for a question.
+
+Generate an answer grounded in those passages.
+
+Show page references or quoted supporting passages.
+
+This helps reduce unsupported answers and makes the output easier to verify. RAG is a later enhancement; the initial version can answer questions from a selected page or a smaller extracted text section.
+
+5. Recommended AI models and tools
+
+Your priorities are good accuracy, low resource usage, speed, free or open models where possible, and development in VS Code on Windows.
+
+Task
+
+	
+
+Recommended starting point
+
+	
+
+Purpose
+
+
+
+
+PDF extraction
+
+	
+
+PyMuPDF
+
+	
+
+Extract selectable text, pages and embedded images
+
+
+
+
+OCR
+
+	
+
+Tesseract OCR
+
+	
+
+Read text from scanned pages and images
+
+
+
+
+Basic image captions
+
+	
+
+BLIP
+
+	
+
+Baseline for simple image descriptions
+
+
+
+
+Advanced image explanations
+
+	
+
+A compact vision-language model
+
+	
+
+Understand images alongside labels and context
+
+
+
+
+Text summaries and decisions
+
+	
+
+A small instruction-tuned language model
+
+	
+
+Generate explanations and structured insights
+
+
+
+
+Sentiment
+
+	
+
+DistilBERT-based sentiment classifier
+
+	
+
+Classify the tone of text
+
+
+
+
+English audio
+
+	
+
+Piper or Kokoro
+
+	
+
+Convert text into speech locally
+
+
+
+
+API/backend
+
+	
+
+FastAPI
+
+	
+
+Connect the models to the web interface
+
+
+
+
+Initial database
+
+	
+
+SQLite
+
+	
+
+Save users, documents, bookmarks and results
+
+Where to find models
+
+Hugging Face Models
+ — model weights, documentation, and license details.
+
+Hugging Face Spaces
+ — examples and demos to test before integrating a model.
+
+Ollama model library
+ — convenient local model testing on supported hardware.
+
+BLIP image captioning
+ — a starting point for basic image captions.
+
+Piper TTS source
+ — local speech generation and voice resources.
+
+Model selection rule: A free model download does not mean that hosted inference is free or that the model can be used for every commercial purpose. Review the specific model and voice licenses before deployment. Also test model memory requirements on your computer before committing to one.
+
+How to improve accuracy
+
+Do not measure every feature with one overall accuracy percentage. Use a separate evaluation for each task.
+
+Feature
+
+	
+
+How to evaluate
+
+
+
+
+PDF extraction and OCR
+
+	
+
+Character error rate (CER) and word error rate (WER); lower is better
+
+
+
+
+Summaries
+
+	
+
+Factual correctness, important-point coverage and unsupported claims
+
+
+
+
+Image explanation
+
+	
+
+Accuracy of labels, objects and relationships
+
+
+
+
+Sentiment
+
+	
+
+Precision, recall and F1 score on labeled examples
+
+
+
+
+Decision extraction
+
+	
+
+Whether extracted decisions match verified source passages
+
+
+
+
+Speech generation
+
+	
+
+Missing or mispronounced words, pronunciation, pacing and listening quality
+
+Your existing notebook needs some evaluation changes: it currently uses a hardcoded sample ground-truth sentence, so its metrics do not establish the accuracy of real books. 
+genai_project_3.py
+
+Improvements to prioritize:
+
+Test with real PDFs and images, including scanned, rotated, low-resolution, and text-heavy pages.
+
+Correct image contrast and rotation before OCR where necessary.
+
+Preserve page numbers, headings, and document sections.
+
+Break long documents into chunks rather than sending a whole book to a small model at once.
+
+Use source passages and page references for generated answers.
+
+Test several models against the same representative sample before choosing one.
+
+Show uncertainty and allow users to correct extracted text.
+
+Avoid promising 98% accuracy until a defined dataset and evaluation process actually demonstrate it.
+
+6. Frontend pages and user interface
+
+The application should have a simple, accessible interface with these pages.
+
+Page 1 — Dashboard
+
+Recent documents, upload button, Drive import, supported links, processing status, and recently played audio.
+
+Page 2 — Reader and audio player
+
+Document preview, extracted text, page navigation, chapter selection, playback controls, speed, and bookmarks.
+
+Page 3 — AI learning workspace
+
+Summary, simple-English explanation, key concepts, flashcards, quiz, sentiment and decision extraction.
+
+Page 4 — Image and diagram assistant
+
+Image preview, OCR text, diagram explanation, questions about the image, and audio playback of the explanation.
+
+Page 5 — My library and history
+
+Saved documents, source links, generated audio, bookmarks, reading progress and deletion controls.
+
+Page 6 — Settings
+
+Voice, playback speed, reading preferences, account controls, privacy options, and language settings for future expansion.
+
+Start with English only, as planned. Design the code so additional languages can be added later without rebuilding the entire application.
+
+7. Backend and project structure
+
+Use React for the frontend and Python FastAPI for the backend. Keep the model-loading and document-processing code separate from the API routes so it is easier to test and maintain.
+
+readwise-ai/
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── FileUploader.jsx
+│   │   │   ├── DriveImport.jsx
+│   │   │   ├── AudioPlayer.jsx
+│   │   │   ├── DocumentViewer.jsx
+│   │   │   └── ProcessingStatus.jsx
+│   │   ├── pages/
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── Reader.jsx
+│   │   │   ├── AIWorkspace.jsx
+│   │   │   ├── ImageAssistant.jsx
+│   │   │   ├── Library.jsx
+│   │   │   └── Settings.jsx
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   └── package.json
+│
+├── backend/
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── api/
+│   │   │   ├── uploads.py
+│   │   │   ├── drive.py
+│   │   │   ├── documents.py
+│   │   │   ├── audio.py
+│   │   │   ├── images.py
+│   │   │   └── analysis.py
+│   │   ├── services/
+│   │   │   ├── pdf_service.py
+│   │   │   ├── ocr_service.py
+│   │   │   ├── image_service.py
+│   │   │   ├── llm_service.py
+│   │   │   ├── tts_service.py
+│   │   │   └── evaluation_service.py
+│   │   ├── database/
+│   │   │   ├── models.py
+│   │   │   └── connection.py
+│   │   └── schemas/
+│   │       └── requests.py
+│   ├── requirements.txt
+│   └── .env.example
+│
+├── tests/
+├── .gitignore
+└── README.md
+What each part does
+
+uploads.py: validate and receive PDF and image uploads.
+
+drive.py: retrieve authorized files through Google Drive.
+
+documents.py: manage document metadata, text extraction, and processing status.
+
+pdf_service.py: extract PDF text and embedded images.
+
+ocr_service.py: recognize text from scanned pages and images.
+
+image_service.py: prepare images and generate image explanations.
+
+llm_service.py: summaries, explanations, Q&A, sentiment integration where applicable, and decision extraction.
+
+tts_service.py: generate and manage audio output.
+
+evaluation_service.py: run quality checks against a test dataset.
+
+database/: save document records, bookmarks, progress and generated-result metadata.
+
+frontend/src/services/api.js: keep HTTP requests in one place instead of duplicating them in every page.
+
+Load model weights once when the backend starts, where practical. Avoid loading a large model for every individual request.
+
+8. Database design
+
+Use SQLite for the first working version. Move to PostgreSQL when the application needs more concurrent users or more robust production database management.
+
+Table
+
+	
+
+Main information stored
+
+
+
+
+users
+
+	
+
+User ID, email, password hash, account details
+
+
+
+
+documents
+
+	
+
+Owner, title, original filename, file type, source type, processing status
+
+
+
+
+document_pages
+
+	
+
+Page number, extracted text, extraction status
+
+
+
+
+document_images
+
+	
+
+Image reference, source page, OCR text, explanation
+
+
+
+
+audio_files
+
+	
+
+Document, section, audio file path, voice and duration where available
+
+
+
+
+summaries
+
+	
+
+Document or section summary, model version
+
+
+
+
+analysis_results
+
+	
+
+Sentiment, decisions, recommendations, risks, supporting passages
+
+
+
+
+bookmarks
+
+	
+
+User, document, page or text position
+
+
+
+
+reading_progress
+
+	
+
+User, document, current page and playback position
+
+
+
+
+processing_jobs
+
+	
+
+Job status, progress, error message, timestamps
+
+Important design rules:
+
+Use unique IDs to connect records to the correct user and document.
+
+Store file paths or object-storage references instead of storing large audio and image files directly in database rows.
+
+Record the original source type, such as local upload, Drive, or direct URL.
+
+Track model version and processing settings so you can investigate changes in output quality.
+
+Store only the information needed for the feature; don't retain sensitive source content indefinitely without a clear reason.
+
+Add ownership checks to every document, audio, bookmark and result endpoint.
+
+Authentication is optional for a local prototype, but should be implemented before releasing a public multi-user application.
+
+9. API endpoints
+
+These are proposed API routes for the frontend and backend to communicate. They are a design plan, not endpoints that already exist.
+
+Method
+
+	
+
+Endpoint
+
+	
+
+Purpose
+
+
+
+
+POST
+
+	
+
+/api/uploads
+
+	
+
+Upload a PDF or image
+
+
+
+
+POST
+
+	
+
+/api/import/drive
+
+	
+
+Import an authorized Google Drive file
+
+
+
+
+POST
+
+	
+
+/api/import/url
+
+	
+
+Import a supported direct file URL
+
+
+
+
+GET
+
+	
+
+/api/jobs/{job_id}
+
+	
+
+Check processing status
+
+
+
+
+GET
+
+	
+
+/api/documents
+
+	
+
+List the user's documents
+
+
+
+
+GET
+
+	
+
+/api/documents/{id}
+
+	
+
+Get document details and extracted text
+
+
+
+
+GET
+
+	
+
+/api/documents/{id}/pages/{page}
+
+	
+
+Retrieve a page
+
+
+
+
+POST
+
+	
+
+/api/documents/{id}/audio
+
+	
+
+Generate audio for the document or a section
+
+
+
+
+GET
+
+	
+
+/api/audio/{id}
+
+	
+
+Retrieve or stream generated audio
+
+
+
+
+POST
+
+	
+
+/api/documents/{id}/summary
+
+	
+
+Generate a summary
+
+
+
+
+POST
+
+	
+
+/api/documents/{id}/ask
+
+	
+
+Ask a question about the document
+
+
+
+
+POST
+
+	
+
+/api/documents/{id}/decisions
+
+	
+
+Extract decisions and recommendations
+
+
+
+
+POST
+
+	
+
+/api/images/explain
+
+	
+
+Explain an uploaded or extracted image
+
+
+
+
+POST
+
+	
+
+/api/documents/{id}/sentiment
+
+	
+
+Analyze text sentiment
+
+
+
+
+DELETE
+
+	
+
+/api/documents/{id}
+
+	
+
+Delete a document and its associated data
+
+Long operations—such as processing a full book, running OCR across many pages, or generating many audio sections—should run as background jobs. The frontend should display progress and let the user know if a job fails or can be retried.
+
+10. Security, privacy and reliability
+
+These are core requirements, not optional polish.
+
+File security
+
+Verify actual file contents, not just extensions.
+
+Set file-size and page-count limits.
+
+Reject malformed or unsupported files.
+
+Store uploads outside the public web directory.
+
+Generate safe internal filenames instead of trusting filenames supplied by users.
+
+Add retention limits and a reliable delete process.
+
+Link security
+
+Validate URLs and restrict allowed protocols.
+
+Protect the backend against server-side request forgery (SSRF).
+
+Block access to localhost, private network addresses and cloud metadata endpoints.
+
+Limit redirects, download duration and response size.
+
+Never accept arbitrary URLs and fetch them without validation.
+
+Account and Drive security
+
+Use secure password hashing if you implement local accounts.
+
+Store OAuth tokens securely and request minimal Drive permissions.
+
+Never commit API keys, OAuth secrets, passwords or tokens to GitHub.
+
+Enforce per-user access to every document and generated file.
+
+AI reliability
+
+Keep the original extracted text available for verification.
+
+Show page references for AI-generated answers when possible.
+
+Distinguish generated explanations from source text.
+
+Treat uploaded content as untrusted data, not as instructions to the AI system.
+
+Tell users when OCR or image interpretation may be uncertain.
+
+Copyright: The application should be designed for content users are permitted to upload and process. Avoid building features that bypass access controls or distribute copyrighted books without authorization.
+
+11. Deployment and GitHub plan
+
+GitHub will hold the source code, documentation, version history, and tests. It will not automatically run your AI models just because the code has been uploaded.
+
+1. GitHub repository
+
+Store the frontend, backend, README, tests and configuration examples. Exclude private keys, uploaded books, generated audio, virtual environments and model caches.
+
+2. Frontend hosting
+
+Deploy the React application to a suitable static frontend host.
+
+3. Backend hosting
+
+Deploy FastAPI to a service that supports Python dependencies, model inference, temporary storage, background tasks and adequate memory.
+
+4. Persistent storage
+
+Use a persistent database and suitable file or object storage. Do not assume local files on a hosted server survive restarts.
+
+You can begin locally without paying for model inference by running compatible open models on your own machine. A public website that processes files for multiple users may require paid compute or storage, especially for image models and long audio generation. Free hosting plans often have limits, sleeping services, or insufficient memory.
+
+Before choosing a host, benchmark the model sizes and processing time on your computer and check the host's current limits.
+
+12. Development roadmap — build in phases
+
+I recommend this order so you can complete a working application without having to build every AI feature at once.
+
+01
+
+Foundation
+
+Phase 1 — Basic web application
+
+Create the React frontend and FastAPI backend.
+
+Build the dashboard and file-upload interface.
+
+Support PDF, PNG, JPG and JPEG.
+
+Validate files and display useful errors.
+
+Set up the database and initial API routes.
+
+First milestone Users can upload a supported file.
+
+02
+
+Extraction
+
+Phase 2 — PDF and image processing
+
+Integrate PyMuPDF.
+
+Integrate Tesseract OCR.
+
+Extract embedded PDF images.
+
+Preserve page numbers and text order.
+
+Display extracted text and image previews.
+
+Test scanned and selectable-text PDFs separately.
+
+Second milestone Users can inspect extracted content.
+
+03
+
+Audio
+
+Phase 3 — English book-to-audio
+
+Replace the notebook's GPT-2 text enhancement with an instruction-tuned model.
+
+Integrate a suitable local English TTS engine.
+
+Generate audio by page or section.
+
+Build the audio player and playback-speed controls.
+
+Add bookmarks and reading progress.
+
+Third milestone Users can upload a book and listen to it.
+
+04
+
+Cloud
+
+Phase 4 — Google Drive and external links
+
+Import authorized Drive files.
+
+Add supported direct PDF and image URL imports.
+
+Show file details and progress.
+
+Handle expired permissions, invalid links and download failures.
+
+Apply secure download and file-size restrictions.
+
+Fourth milestone Users can provide files without manually downloading them first.
+
+05
+
+AI learning
+
+Phase 5 — AI learning workspace
+
+Add document summaries and simple-English explanations.
+
+Extract key points and definitions.
+
+Add sentiment analysis.
+
+Extract decisions, recommendations, benefits and risks.
+
+Generate flashcards and quizzes.
+
+Provide source-page references where possible.
+
+Fifth milestone The application becomes a learning assistant, not just an audio converter.
+
+06
+
+Vision AI
+
+Phase 6 — Image and diagram understanding
+
+Keep BLIP as a baseline for basic captions.
+
+Evaluate a compact vision-language model.
+
+Combine OCR with image understanding.
+
+Explain diagram components and relationships.
+
+Add image questions and audio explanations.
+
+Sixth milestone Users can learn from visual content in their documents.
+
+07
+
+Release
+
+Phase 7 — Quality, security and deployment
+
+Evaluate extraction and AI outputs.
+
+Add automated tests and error logging.
+
+Add authentication if needed.
+
+Implement background jobs and persistent storage.
+
+Push the code to GitHub.
+
+Deploy the frontend and backend.
+
+Test the complete application from another device.
+
+Final milestone A usable, hosted web application.
+
+13. Testing checklist before release
+
+Use a representative set of real documents, not only one sample PDF.
+
+Release test checklist
+
+0/12
+
+A normal PDF with selectable text
+A scanned PDF with image-based pages
+A PDF containing diagrams and embedded images
+A multi-page book with headings and tables
+A clear PNG image containing text
+A JPG photograph of a book page
+A public Google Drive file with permitted access
+A private Drive file requiring authorization
+An invalid or expired sharing link
+An unsupported URL or file type
+A long document that requires background processing
+A document containing text that could mislead an AI assistant
+14. How this improves your existing project
+
+Your current notebook already provides a useful starting point for PDF extraction, BLIP image captioning, GPT-2-based text generation, and Google Text-to-Speech. 
+genai_project_3.py
+
+The full-stack version should improve that foundation rather than simply place the notebook inside a website.
+
+Existing notebook
+
+	
+
+Planned improvement
+
+
+
+
+Notebook-based execution
+
+	
+
+React frontend and FastAPI backend
+
+
+
+
+Local PDF or URL input
+
+	
+
+File upload, Drive import and validated direct links
+
+
+
+
+GPT-2 text enhancement
+
+	
+
+Instruction-tuned model for clearer explanations
+
+
+
+
+BLIP image captioning
+
+	
+
+OCR plus image explanation and follow-up questions
+
+
+
+
+gTTS speech generation
+
+	
+
+Local English TTS option
+
+
+
+
+Hardcoded sample evaluation
+
+	
+
+Real test dataset and task-specific metrics
+
+
+
+
+One-off processing
+
+	
+
+Background jobs, saved results and progress tracking
+
+
+
+
+Limited output
+
+	
+
+Document library, audio player, bookmarks and AI learning workspace
+
+15. Final recommended scope
+
+To keep the project manageable, use this as the first complete working version:
+
+Input: PDF, PNG, JPG/JPEG, Google Drive links and supported direct file links.
+
+Extraction: PDF text, embedded images and OCR for scanned content.
+
+Audio: English speech, playback controls and section-wise generation.
+
+AI: Summaries, simple-English explanations, image descriptions, sentiment, decisions and recommendations.
+
+Interface: Dashboard, reader/audio player, AI workspace, image assistant and library.
+
+Backend: FastAPI with separate processing services.
+
+Storage: SQLite initially, with suitable file storage.
+
+Models: Free/open-weight options where licensing permits, tested for accuracy and memory requirements.
+
+Deployment: GitHub for source control, plus separately hosted frontend, backend and persistent storage.
+
+My strongest recommendation: finish Phases 1–3 before attempting every advanced model. That gives you a working upload-to-audio application early. Then add Drive import, AI analysis and visual learning one at a time, measuring accuracy at each stage.
